@@ -10,8 +10,8 @@
 | Name| Duties and Responsibilities|
 |-----|----------------------------|
 |John Efrain   | Testing |
-|John Efrain   | Testing|
-|John Efrain   | Created the Code|
+|Althea Jayne  | Testing|
+|Leneth        | Created the Code|
 |John Efrain   | Testing of the Table|
 
 # The Code
