@@ -1,6 +1,8 @@
 <h1 allign = "cented" > #cs 1206 - Github  Demo <h1>
 <p allign = "center"> Team Members <br>
-<a href = "https://github.com/JohnEfrainManalo/CS1206-github-demo"> John Efrain V. Manalo </a><br>
+<a href = "https://github.com/JohnEfrainManalo/CC103-FinalProject-CS1206-Team9.git"> Althea Jayne I. Jayawon </a><br>
+<a href = "https://github.com/JohnEfrainManalo/CC103-FinalProject-CS1206-Team9.git"> John Efrain V. Manalo </a><br>
+<a href = "https://github.com/JohnEfrainManalo/CC103-FinalProject-CS1206-Team9.git"> Leneth M. Mondragon </a><br>
 </p>
 
 # Main Header
