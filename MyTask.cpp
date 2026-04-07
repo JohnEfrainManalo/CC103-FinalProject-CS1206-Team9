@@ -109,9 +109,9 @@ void showTasks(){
 
 
 /*
-  cout << "Draft by Team 9" << endl
-         << "Members: " << endl
-         << "Altha Jayne I. Jayawon" << endl
-         << "John Efrain V. Manalo" << endl
-         << "Leneth M. Mondragon" << endl;
+By Team 9 
+Members: 
+  Altha Jayne I. Jayawon
+  John Efrain V. Manalo
+  Leneth M. Mondragon
 */
