@@ -110,6 +110,10 @@ void showTasks(){
 }
 
 void delete_HP_Task(){
+  if (front == nullptr){
+    cout << "Tasklist is Empty. Nothing to delete." << endl;
+    return;
+  }
   MyTask* temp = front;
   front = temp->next;
   delete temp;
