@@ -11,9 +11,11 @@ MyTask* front = nullptr;
 
 void display_Menu();    //Completed
 void addTask(string task); //Prototyped as of April 7, 2026
-void deleteTask();
+void delete_HP_Task(); //Prototyped as of April 7, 2026
 void completeTask();
 void showTasks(); //Prototyped as of April 7, 2026
+void arrange_by_due_date();
+void arrange_by_importance();
 void undo();
 
 //============== M A I N   F U N C T I O N ===========
@@ -34,6 +36,7 @@ int main(){
         break;
 
       case 2: 
+        delete_HP_Task();
         break;
 
       case 3:
@@ -65,7 +68,7 @@ int main(){
 void display_Menu(){
   cout << "\n====== MyTask Menu ======" << endl
        << "1. Add Task" << endl
-       << "2. Delete Task" << endl
+       << "2. Delete the Highhest Priority Task" << endl
        << "3. Complete Task" << endl
        << "4. Show Tasks" << endl
        << "5. Arrange Tasks by Due Date" << endl
@@ -94,7 +97,7 @@ temp->next = MyNewTask;
 void showTasks(){
   cout << "\n\n====== My Tasks ======" << endl;
   if (front == nullptr){
-    cout << "No task listed yet.";
+    cout << "No task listed yet." << endl;
     return;
   }
   MyTask* temp = front;
@@ -104,6 +107,12 @@ void showTasks(){
     temp = temp->next;
     counter++;
   }
+}
+
+void delete_HP_Task(){
+  MyTask* temp = front;
+  front = temp->next;
+  delete temp;
 }
 
 
