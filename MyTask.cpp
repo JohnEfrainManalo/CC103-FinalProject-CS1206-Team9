@@ -190,7 +190,7 @@ void showTasks(){
         cout << "   Status   : ";
 
         if (temp->complete){
-            cout << "Completed";
+            cout << "\033[32m" << "Completed" << "\033[0m";
         } else {
             cout << "Pending";
         }
