@@ -131,7 +131,7 @@ void delete_HP_Task(){
 /*
 By Team 9 
 Members: 
-  Altha Jayne I. Jayawon
+  Althea Jayne I. Jayawon
   John Efrain V. Manalo
   Leneth M. Mondragon
 */
