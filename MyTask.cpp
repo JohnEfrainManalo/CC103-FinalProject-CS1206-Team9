@@ -4,24 +4,27 @@ using namespace std;
 
 struct MyTask{
   string task;
+  int importance;
+  //int date;
   MyTask* next;
 };
 
 MyTask* front = nullptr;
 
 void display_Menu();    //Completed
-void addTask(string task); //Prototyped as of April 7, 2026
+void addTask(string task, int importance); //Prototyped as of April 7, 2026 
 void delete_HP_Task(); //Prototyped as of April 7, 2026
 void completeTask();
 void showTasks(); //Prototyped as of April 7, 2026
-void arrange_by_due_date();
-void arrange_by_importance();
+void arrange_by_due_date();    //Will use array based
+void arrange_by_importance(); //Will use array based
 void undo();
 
 //============== M A I N   F U N C T I O N ===========
 int main(){
   int choice = 0;
   string task;
+  int importance = 0;
   
   do {
     display_Menu();
@@ -32,7 +35,9 @@ int main(){
       case 1: 
         cout << "Enter the task to insert: ";
         getline(cin, task);
-        addTask(task);
+        cout << "Enter importance level: ";
+        cin >> importance;
+        addTask(task, importance);
         break;
 
       case 2: 
@@ -50,6 +55,7 @@ int main(){
         break;
 
       case 6:
+        arrange_by_importance();
         break;
 
       case 7:
@@ -78,9 +84,10 @@ void display_Menu(){
        << "Enter choice: ";
 }
 
-void addTask(string task){
+void addTask(string task, int importance){
 MyTask* MyNewTask = new MyTask();
 MyNewTask->task = task;
+MyNewTask->importance = importance;
 MyNewTask->next = nullptr;
 
 if (front == nullptr){
@@ -111,7 +118,7 @@ void showTasks(){
 
 void delete_HP_Task(){
   if (front == nullptr){
-    cout << "Tasklist is Empty. Nothing to delete." << endl;
+    cout << "\nTask list is empty. There is nothing to delete." << endl;
     return;
   }
   MyTask* temp = front;
@@ -128,3 +135,39 @@ Members:
   John Efrain V. Manalo
   Leneth M. Mondragon
 */
+
+/*void arrange_by_importance(){
+  if(front->importance > front->next->importance){
+    MyTask* temp = front;
+    front->next = temp->next->next;
+    temp->next = front;
+    delete temp;
+  }
+
+
+}
+  */
+
+  void arrange_by_importance(){
+  if (front == nullptr || front->next == nullptr){
+    return; // nothing to sort
+  }
+
+  bool swapped;
+  do {
+    swapped = false;
+    MyTask* current = front;
+
+    while (current->next != nullptr){
+      if (current->importance < current->next->importance){
+        // swap data instead of nodes (simpler)
+        swap(current->task, current->next->task);
+        swap(current->importance, current->next->importance);
+        swapped = true;
+      }
+      current = current->next;
+    }
+  } while (swapped);
+
+  cout << "\nTasks arranged by importance (highest first).\n";
+}
