@@ -1,5 +1,6 @@
 #include <iostream> 
 #include <string>
+#include <stack>
 using namespace std;
 
 struct MyTask{
@@ -7,7 +8,15 @@ struct MyTask{
   MyTask* next;
 };
 
+enum ActionType { ADD_ACTION, DELETE_ACTION };
+
+struct Action {
+  ActionType type;
+  string task;
+};
+
 MyTask* front = nullptr;
+stack<Action> undoStack;
 
 void display_Menu();    //Completed
 void addTask(string task); //Prototyped as of April 7, 2026
@@ -22,12 +31,12 @@ void undo();
 int main(){
   int choice = 0;
   string task;
-  
+
   do {
     display_Menu();
     cin >> choice;
     cin.ignore();
-    
+
     switch (choice){
       case 1: 
         cout << "Enter the task to insert: ";
@@ -53,6 +62,7 @@ int main(){
         break;
 
       case 7:
+        undo();
         break;
 
       case 8: return 0;
@@ -79,19 +89,21 @@ void display_Menu(){
 }
 
 void addTask(string task){
-MyTask* MyNewTask = new MyTask();
-MyNewTask->task = task;
-MyNewTask->next = nullptr;
+  MyTask* MyNewTask = new MyTask();
+  MyNewTask->task = task;
+  MyNewTask->next = nullptr;
 
-if (front == nullptr){
-  front = MyNewTask;
-  return;
-}
-MyTask* temp = front;
-while (temp->next != nullptr){
-  temp = temp->next;
-}
-temp->next = MyNewTask;
+  if (front == nullptr){
+    front = MyNewTask;
+  } else {
+    MyTask* temp = front;
+    while (temp->next != nullptr){
+      temp = temp->next;
+    }
+    temp->next = MyNewTask;
+  }
+
+  undoStack.push({ADD_ACTION, task});
 }
 
 void showTasks(){
@@ -115,11 +127,49 @@ void delete_HP_Task(){
     return;
   }
   MyTask* temp = front;
+  undoStack.push({DELETE_ACTION, temp->task});
   front = temp->next;
   delete temp;
 }
 
 
+
+void undo(){
+  if (undoStack.empty()){
+    cout << "Nothing to undo." << endl;
+    return;
+  }
+
+  Action lastAction = undoStack.top();
+  undoStack.pop();
+
+  if (lastAction.type == ADD_ACTION){
+    if (front == nullptr){
+      cout << "Nothing to undo." << endl;
+      return;
+    }
+    MyTask* current = front;
+    MyTask* previous = nullptr;
+    while (current->next != nullptr){
+      previous = current;
+      current = current->next;
+    }
+    if (previous == nullptr){
+      delete front;
+      front = nullptr;
+    } else {
+      delete current;
+      previous->next = nullptr;
+    }
+    cout << "Undo: removed last added task '" << lastAction.task << "'." << endl;
+  } else {
+    MyTask* restored = new MyTask();
+    restored->task = lastAction.task;
+    restored->next = front;
+    front = restored;
+    cout << "Undo: restored deleted task '" << lastAction.task << "'." << endl;
+  }
+}
 
 /*
 By Team 9 
