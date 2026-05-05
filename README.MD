@@ -1,418 +1,105 @@
-# MyTask Manager System (C++)
+# MyTask: Task Scheduler / To-Do Manager
 
-## Overview
-
-The **MyTask Manager System** is a console-based task management application written in C++. It uses:
+## Problem Description
+A lot people forget their tasks, especially when they're doing multiple deadlines and responsibilities. Our program solves that by letting the users store, sort, prioritize, and manage their tasks in one place — with an undo feature. This project demonstrates the practical implementation of fundamental Data Structures and Algorithms concepts.
 
 * Linked Lists
-* Stack Data Structure
+* Stack Data Structure 
 * Sorting Algorithms
-* Exception Handling
+* Exception Handling 
 * Dynamic Memory Allocation
 
-The program allows users to:
+It allows users to: 
 
-* Add tasks
-* Delete the highest priority task
-* Complete tasks
-* View tasks
-* Arrange tasks by importance
-* Arrange tasks by due date
+* Add tasks 
+* Delete the highest priority task 
+* Complete tasks 
+* View tasks 
+* Arrange tasks by importance 
+* Arrange tasks by due date 
 * Undo actions
 
-This project demonstrates the practical implementation of fundamental Data Structures and Algorithms concepts.
 
 ---
 
-# Features
+## Data Structures Used
 
-## 1. Add Task
+### Singly Linked List
+Each task is a node that holds a name, an importance level, due date, and completion status. The nodes are connected through a `next` pointer, forming a chain.
 
-Users can add a new task with:
+We used Linked list instead of an array because it does not limit inputs, and also we don't know how many tasks the user will add ahead of time. The list grows and shrinks dynamically — no wasted memory, no fixed limit.
 
-* Task name
-* Importance level
-* Due date
+### Stack (`std::stack`)
+Every action the user takes (add, delete, complete) gets recorded as an `Action` and pushed onto a stack. When the user hits undo, the top action gets popped and will reversed.
 
-Example:
-
-```text
-Task Name: Finish Assignment
-Importance: 9
-Due Date: 2026-05-10
-```
+A stack fits naturally here because undo always reverses the *most recent* thing — which is exactly what LIFO (Last In, First Out) gives you.
 
 ---
 
-## 2. Delete Highest Priority Task
+## Algorithm Explanation
 
-The program automatically finds and removes the task with the highest importance value.
+**Adding a task** — A new node is created and appended to the end of the linked list. The action is pushed to the undo stack.
 
-Example:
+**Deleting the highest priority task** — The list is traversed once, tracking which node has the highest importance value. That node gets unlinked and deleted. O(n).
 
-```text
-Deleted highest priority task: Finish Assignment
-```
+**Completing a task** — The user picks a task number from the displayed list. The program walks to that position and flips `complete` to `true`.
 
----
+**Sorting (Bubble Sort)** — Used for both "sort by importance" and "sort by due date":
+- Walk through the list comparing adjacent nodes
+- If they're out of order, swap their data fields
+- Repeat until no swaps happen in a full pass
 
-## 3. Complete Task
+Dates are stored as `YYYY-MM-DD` strings, so string comparison works correctly for date ordering without needing a date library.
 
-Users can mark tasks as completed.
-
-Completed tasks will display:
-
-```text
-Status: Completed
-```
+**Undo** —
+- Undo an *add* → delete the last node in the list
+- Undo a *delete* → re-create the node and prepend it to the front
+- Undo a *complete* → find the task by name and set `complete` back to `false`
 
 ---
 
-## 4. Show Tasks
+## Iterative vs. Recursive
 
-Displays all tasks currently stored in the linked list.
+All operations in this project are iterative (loops only, no recursion).
 
-Each task displays:
+**Which is faster?** Iterative. Recursive traversal adds a function call to the call stack for every single node — same O(n) complexity, but with extra overhead. For a long list, recursion also risks a stack overflow. Loops don't have that problem.
 
-* Task name
-* Importance level
-* Due date
-* Completion status
+**Which is easier to understand?** For linked list traversal, iteration is clearer. A `while (temp != nullptr)` loop reads exactly like "keep going until the end." Recursion requires mentally unwinding the call stack to follow what's happening, which adds unnecessary complexity for something this straightforward.
 
 ---
 
-## 5. Arrange Tasks by Due Date
+## Design Decisions
 
-Tasks are sorted from earliest due date to latest due date.
+**Linked list over array** — Task count is unknown at runtime. Dynamic allocation made more sense than pre-sizing an array and hoping it's big enough.
 
-The sorting algorithm used is:
+**`std::stack` over a custom stack** — The standard library's stack is already reliable and tested. Writing our own would add code for no real benefit, since the linked list already demonstrates custom data structure implementation.
 
-* Bubble Sort
+**Bubble Sort** — Simple to implement and easy to verify. For the size of task lists this program realistically handles, O(n²) isn't a practical problem. A fancier sort would be harder to read and harder to debug.
 
----
+**Swapping data instead of relinking nodes during sort** — Relinking requires carefully updating `front`, tail, and prev pointers for every swap, which is error-prone. Swapping the four data fields inside nodes is simpler and produces the same result.
 
-## 6. Arrange Tasks by Importance
+**YYYY-MM-DD date format** — Storing dates as strings in this format lets us sort them correctly using plain string comparison (`<` and `>`), no date parsing needed.
 
-Tasks are sorted from highest importance to lowest importance.
-
-The sorting algorithm used is:
-
-* Bubble Sort
+**Single-level undo only** — Each undo call reverses exactly one action. Clean and predictable. Redo wasn't in scope.
 
 ---
 
-## 7. Undo Feature
+## Team Members
 
-The system stores actions inside a Stack.
+**Team 9 — Byte_Me_67**  
+CC103 | CS1206 | 2nd Semester, AY 2025–2026  
+Batangas State University – Alangilan Campus
 
-Supported undo actions:
-
-* Undo Add
-* Undo Delete
-* Undo Complete
-
-This follows the:
-
-* LIFO (Last In First Out) principle
+| SR-Code | Name | Role |
+|---------|------|------|
+| 25-01444 | Jayawon, Althea Jayne I. | Researcher, Tester |
+| 25-78190 | Manalo, John Efrain V. | Main Programmer, System Architect |
+| 25-07803 | Mondragon, Leneth M. | Documenter, Designer |
 
 ---
 
-# Data Structures Used
+## Acknowledgements
 
-| Data Structure | Purpose                 |
-| -------------- | ----------------------- |
-| Linked List    | Store tasks dynamically |
-| Stack          | Undo functionality      |
+Thanks to our CC103 instructor: Ms. Fatima Marie P. Agdon for the lectures on linked lists, stacks, and sorting that this project is built on. And to each other — this was a team effort from proposal to final submission.
 
----
-
-# Program Structure
-
-## Task Node Structure
-
-```cpp
-struct MyTask{
-    string task;
-    int importance;
-    string dueDate;
-    bool complete;
-    MyTask* next;
-};
-```
-
-### Explanation
-
-| Variable   | Purpose                  |
-| ---------- | ------------------------ |
-| task       | Stores task name         |
-| importance | Stores priority level    |
-| dueDate    | Stores task deadline     |
-| complete   | Tracks completion status |
-| next       | Pointer to next node     |
-
----
-
-# Undo Action Structure
-
-```cpp
-struct Action {
-    ActionType type;
-    string task;
-    int importance;
-    string dueDate;
-};
-```
-
-This structure stores action history for the undo system.
-
----
-
-# Libraries Used
-
-## iostream
-
-Used for:
-
-* cin
-* cout
-* console interaction
-
-```cpp
-#include <iostream>
-```
-
----
-
-## string
-
-Used for text handling.
-
-```cpp
-#include <string>
-```
-
----
-
-## stack
-
-Used for the undo functionality.
-
-```cpp
-#include <stack>
-```
-
----
-
-## limits
-
-Used for safe input handling.
-
-```cpp
-#include <limits>
-```
-
-This prevents invalid input issues.
-
-Example:
-
-```cpp
-cin.ignore(numeric_limits<streamsize>::max(), '\n');
-```
-
----
-
-# Exception Handling
-
-The system uses:
-
-```cpp
-try
-catch
-```
-
-blocks to prevent crashes caused by invalid input.
-
-Example:
-
-```cpp
-try {
-    cin >> importance;
-}
-catch (exception& e) {
-    cout << e.what();
-}
-```
-
----
-
-# Algorithms Used
-
-## Bubble Sort
-
-Used for:
-
-* Arrange by Importance
-* Arrange by Due Date
-
-### Time Complexity
-
-| Case       | Complexity |
-| ---------- | ---------- |
-| Best Case  | O(n)       |
-| Worst Case | O(n²)      |
-
----
-
-# Linked List Operations
-
-## Insertion
-
-New tasks are inserted at the end of the linked list.
-
-### Time Complexity
-
-```text
-O(n)
-```
-
----
-
-## Deletion
-
-Highest priority task is searched and removed.
-
-### Time Complexity
-
-```text
-O(n)
-```
-
----
-
-## Traversal
-
-The program traverses the linked list to display tasks.
-
-### Time Complexity
-
-```text
-O(n)
-```
-
----
-
-# Stack Operations
-
-## Push
-
-Stores actions into the undo stack.
-
-```cpp
-undoStack.push(action);
-```
-
----
-
-## Pop
-
-Removes the latest action during undo.
-
-```cpp
-undoStack.pop();
-```
-
----
-
-# Sample Program Flow
-
-```text
-========== MY TASK MENU ==========
-1. Add Task
-2. Delete Highest Priority Task
-3. Complete Task
-4. Show Tasks
-5. Arrange Tasks by Due Date
-6. Arrange Tasks by Importance
-7. Undo
-8. Exit
-```
-
----
-
-# Example Output
-
-```text
-1. Finish Assignment
-   Importance: 9
-   Due Date : 2026-05-10
-   Status   : Pending
-```
-
----
-
-# Safety Features
-
-The system includes:
-
-* Input validation
-* Exception handling
-* Buffer clearing
-* Null pointer checking
-* Empty list checking
-
-These prevent:
-
-* Program crashes
-* Infinite input loops
-* Invalid memory access
-
----
-
-# Advantages of the System
-
-* Simple console interface
-* Dynamic memory usage
-* Undo functionality
-* Organized task sorting
-* Demonstrates multiple DSA concepts
-* Beginner-friendly implementation
-
----
-
-# Limitations
-
-* Data is not permanently saved
-* Console-based only
-* Uses Bubble Sort (not optimal for large data)
-* No graphical interface
-
----
-
-# Possible Future Improvements
-
-Future upgrades may include:
-
-* File handling
-* Database integration
-* GUI version
-* Login system
-* Search functionality
-* Priority queue implementation
-* Better sorting algorithms
-* Deadline notifications
-
----
-
-# Conclusion
-
-The MyTask Manager System is a beginner-friendly C++ project that demonstrates how different Data Structures and Algorithms work together in a practical application.
-
-It showcases:
-
-* Linked Lists
-* Stack operations
-* Sorting algorithms
-* Dynamic memory allocation
-* Exception handling
-
-while providing a functional task management experience.
+- Schrager, S., & Sadowski, E. (2016). *Getting More Done: Strategies to Increase Scholarly Productivity.* Journal of Graduate Medical Education, 8(1), 10–13. https://doi.org/10.4300/JGME-D-15-00165.1
